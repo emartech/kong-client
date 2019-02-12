@@ -2,12 +2,12 @@ package = "kong-client"
 version = "1.0.0-1"
 supported_platforms = {"linux", "macosx"}
 source = {
-  url = "git+https://github.com/emartech/kong-plugin-boilerplate.git",
+  url = "git+https://github.com/emartech/kong-client.git",
   tag = "1.0.0"
 }
 description = {
-  summary = "Boilerplate for Kong API gateway plugins.",
-  homepage = "https://github.com/emartech/kong-plugin-boilerplate",
+  summary = "Admin API client for Kong.",
+  homepage = "https://github.com/emartech/kong-client.git",
   license = "MIT"
 }
 dependencies = {
