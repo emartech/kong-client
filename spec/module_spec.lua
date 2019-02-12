@@ -1,7 +1,7 @@
 local cjson = require "cjson"
 local kong_helpers = require "spec.helpers"
 local test_helpers = require "spec.test_helpers"
-local ResourceObject = require "src.resources.resource_object"
+local ResourceObject = require "kong_client.resources.resource_object"
 
 describe("KongClient", function()
 

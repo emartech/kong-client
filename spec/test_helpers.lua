@@ -1,5 +1,5 @@
 local kong_helpers = require "spec.helpers"
-local KongClient = require "src.kong_client"
+local KongClient = require "kong_client"
 local cjson = require "cjson"
 
 local function is_error(response)

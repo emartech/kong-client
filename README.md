@@ -22,11 +22,11 @@
 
 ## Access local DB
 
-- `make db`
+`make db`
 
 ## Enter to the local development environment docker image shell
 
-- `make ssh`
+`make ssh`
 
 ## Running all tests from project folder:
 

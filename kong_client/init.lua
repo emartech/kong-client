@@ -1,9 +1,8 @@
 local Object = require "classic"
-
-local Service = require "src.resources.service"
-local Route = require "src.resources.route"
-local Plugin = require "src.resources.plugin"
-local Consumer = require "src.resources.consumer"
+local Service = require "kong_client.resources.service"
+local Route = require "kong_client.resources.route"
+local Plugin = require "kong_client.resources.plugin"
+local Consumer = require "kong_client.resources.consumer"
 
 local KongClient = Object:extend()
 

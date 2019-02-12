@@ -1,6 +1,6 @@
 local Object = require "classic"
-local Pager = require "src.helpers.pager"
-local merge = require "src.helpers.merge".shallow_merge
+local Pager = require "kong_client.helpers.pager"
+local merge = require "kong_client.helpers.merge".shallow_merge
 
 local ResourceObject = Object:extend()
 

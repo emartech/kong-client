@@ -1,4 +1,4 @@
-local ResourceObject = require "src.resources.resource_object"
+local ResourceObject = require "kong_client.resources.resource_object"
 
 local Service = ResourceObject:extend()
 

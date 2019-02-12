@@ -28,8 +28,8 @@ test: ## Run tests
 	docker-compose run kong bash -c "cd /kong && bin/kong migrations up && bin/busted /kong-plugins/spec"
 	docker-compose down
 
-coverage: ## Run tests
-	docker-compose run kong bash -c "cd /kong && bin/kong migrations up && bin/busted --coverage /kong-plugins/spec && luacov 'src/*' && cat luacov.report.out"
+coverage: ## Run coverage
+	docker-compose run kong bash -c "cd /kong && bin/kong migrations up && bin/busted --coverage /kong-plugins/spec && luacov '/kong_client/*' && cat luacov.report.out"
 	docker-compose down
 
 ssh: ## Pings kong on localhost:8000
