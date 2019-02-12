@@ -1,5 +1,5 @@
 package = "kong-client"
-version = "1.0.0-1"
+version = "1.0.0-2"
 supported_platforms = {"linux", "macosx"}
 source = {
   url = "git+https://github.com/emartech/kong-client.git",
@@ -12,8 +12,7 @@ description = {
 }
 dependencies = {
   "lua ~> 5.1",
-  "classic 0.1.0-1",
-  "LuaCov >= 0.13.0-1"
+  "classic 0.1.0-1"
 }
 build = {
   type = "builtin",
