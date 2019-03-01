@@ -37,8 +37,20 @@ local function create_kong_client()
     })
 end
 
+local function add_json_header(request)
+    if type(request.body) == "table" then
+        if not request.headers then
+            request.headers = {}
+        end
+
+        request.headers["Content-Type"] = "application/json"
+    end
+end
+
 local function create_request_sender(http_client)
     return function(request)
+        add_json_header(request)
+
         local response = assert(http_client:send(request))
 
         local raw_body = assert(response:read_body())

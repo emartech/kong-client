@@ -37,9 +37,6 @@ describe("KongClient", function()
                     body = {
                         name = service_name,
                         url = "http://mockbin:8080/request"
-                    },
-                    headers = {
-                        ["Content-Type"] = "application/json"
                     }
                 }))
 
@@ -48,10 +45,7 @@ describe("KongClient", function()
 
                 local service_response = send_admin_request({
                     method = "GET",
-                    path = "/services/" .. service_name,
-                    headers = {
-                        ["Content-Type"] = "application/json"
-                    }
+                    path = "/services/" .. service_name
                 })
 
                 assert.are.equal(service_response.body.id, service.id)
@@ -70,10 +64,7 @@ describe("KongClient", function()
 
                 local service_response = send_admin_request({
                     method = "GET",
-                    path = "/services/" .. service_name,
-                    headers = {
-                        ["Content-Type"] = "application/json"
-                    }
+                    path = "/services/" .. service_name
                 })
 
                 assert.are.equal(service_response.body.id, service.id)
@@ -94,10 +85,7 @@ describe("KongClient", function()
 
                 local service_response = send_admin_request({
                     method = "GET",
-                    path = "/services/" .. service_name,
-                    headers = {
-                        ["Content-Type"] = "application/json"
-                    }
+                    path = "/services/" .. service_name
                 })
 
                 assert.are.equal(updated_service.path, "/headers")
@@ -122,10 +110,7 @@ describe("KongClient", function()
 
                     local service_response = send_admin_request({
                         method = "GET",
-                        path = "/services/" .. service_name,
-                        headers = {
-                            ["Content-Type"] = "application/json"
-                        }
+                        path = "/services/" .. service_name
                     })
 
                     assert.are.equal(updated_service.path, "/headers")
@@ -147,10 +132,7 @@ describe("KongClient", function()
 
                     local service_response = send_admin_request({
                         method = "GET",
-                        path = "/services/" .. service_name,
-                        headers = {
-                            ["Content-Type"] = "application/json"
-                        }
+                        path = "/services/" .. service_name
                     })
 
                     assert.are.equal(created_service.id, service_id)
@@ -172,10 +154,7 @@ describe("KongClient", function()
 
                 local service_response = send_admin_request({
                     method = "GET",
-                    path = "/services/" .. service_name,
-                    headers = {
-                        ["Content-Type"] = "application/json"
-                    }
+                    path = "/services/" .. service_name
                 })
 
                 assert.are.equal(service_response.body.id, found_service.id)
@@ -194,10 +173,7 @@ describe("KongClient", function()
 
                 local service_response = send_admin_request({
                     method = "GET",
-                    path = "/services/" .. service_name,
-                    headers = {
-                        ["Content-Type"] = "application/json"
-                    }
+                    path = "/services/" .. service_name
                 })
 
                 assert.are.equal(service_response.status, 404)
@@ -223,9 +199,6 @@ describe("KongClient", function()
                     path = "/services/",
                     body = {
                         limit = 100
-                    },
-                    headers = {
-                        ["Content-Type"] = "application/json"
                     }
                 })
 
@@ -247,10 +220,7 @@ describe("KongClient", function()
 
                 local service_routes_response = send_admin_request({
                     method = "GET",
-                    path = "/services/" .. service_name .. "/routes/",
-                    headers = {
-                        ["Content-Type"] = "application/json"
-                    }
+                    path = "/services/" .. service_name .. "/routes/"
                 })
 
                 local expected_route = service_routes_response.body.data[1]
@@ -273,10 +243,7 @@ describe("KongClient", function()
 
                 local service_routes_response = send_admin_request({
                     method = "GET",
-                    path = "/services/" .. service_name .. "/routes/",
-                    headers = {
-                        ["Content-Type"] = "application/json"
-                    }
+                    path = "/services/" .. service_name .. "/routes/"
                 })
 
                 assert.are.same(service_routes_response.body, routes)
@@ -290,10 +257,7 @@ describe("KongClient", function()
 
                 local plugins_response = send_admin_request({
                     method = "GET",
-                    path = "/plugins/enabled",
-                    headers = {
-                        ["Content-Type"] = "application/json"
-                    }
+                    path = "/plugins/enabled"
                 })
 
                 assert.are.same(plugins_response.body.enabled_plugins, plugins)
@@ -307,10 +271,7 @@ describe("KongClient", function()
 
                 local plugin_schema_response = send_admin_request({
                     method = "GET",
-                    path = "/plugins/schema/" .. plugin_name,
-                    headers = {
-                        ["Content-Type"] = "application/json"
-                    }
+                    path = "/plugins/schema/" .. plugin_name
                 })
 
                 assert.are.same(plugin_schema_response.body, schema)
@@ -329,9 +290,6 @@ describe("KongClient", function()
                     path = "/plugins/",
                     body = {
                         name = plugin_name
-                    },
-                    headers = {
-                        ["Content-Type"] = "application/json"
                     }
                 })
 
@@ -355,10 +313,7 @@ describe("KongClient", function()
 
                 local service_plugins_response = send_admin_request({
                     method = "GET",
-                    path = "/services/" .. service_name .. "/plugins/",
-                    headers = {
-                        ["Content-Type"] = "application/json"
-                    }
+                    path = "/services/" .. service_name .. "/plugins/"
                 })
 
                 local expected_plugin = service_plugins_response.body.data[1]
@@ -381,10 +336,7 @@ describe("KongClient", function()
 
                 local route_plugins_response = send_admin_request({
                     method = "GET",
-                    path = "/routes/" .. route.id .. "/plugins/",
-                    headers = {
-                        ["Content-Type"] = "application/json"
-                    }
+                    path = "/routes/" .. route.id .. "/plugins/"
                 })
 
                 local expected_plugin = route_plugins_response.body.data[1]
