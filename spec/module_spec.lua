@@ -454,6 +454,73 @@ describe("KongClient", function()
                 assert.are.equal(0, upstream_targets_response.body.total)
             end)
 
+            it("should set the upstream's target as unhealthy", function()
+
+                local upstream_name = "test_upstream"
+
+                local upstream = kong_client.upstreams:create({
+                    name = upstream_name,
+                    healthchecks = {
+                        passive = {
+                            healthy = {
+                                successes = 1,
+                                http_statuses = { 200 }
+                            },
+                            unhealthy = {
+                                http_failures = 1,
+                                tcp_failures = 1,
+                                timeouts = 1,
+                                http_statuses = { 500 }
+                            }
+                        }
+                    }
+                })
+
+                local target = kong_client.upstreams:add_target(upstream.id, {
+                    target = "0.0.0.0:8000"
+                })
+
+                kong_client.upstreams:set_target_as_unhealthy(upstream.id, target.id)
+
+                local upstream_health_response = kong_client.upstreams:show_health(upstream.id)
+
+                assert.are.equal("UNHEALTHY", upstream_health_response.data[1].health)
+            end)
+
+            it("should set the upstream's target as healthy", function()
+
+                local upstream_name = "test_upstream"
+
+                local upstream = kong_client.upstreams:create({
+                    name = upstream_name,
+                    healthchecks = {
+                        passive = {
+                            healthy = {
+                                successes = 1,
+                                http_statuses = { 200 }
+                            },
+                            unhealthy = {
+                                http_failures = 1,
+                                tcp_failures = 1,
+                                timeouts = 1,
+                                http_statuses = { 500 }
+                            }
+                        }
+                    }
+                })
+
+                local target = kong_client.upstreams:add_target(upstream.id, {
+                    target = "0.0.0.0:8000"
+                })
+
+                kong_client.upstreams:set_target_as_unhealthy(upstream.id, target.id)
+                kong_client.upstreams:set_target_as_healthy(upstream.id, target.id)
+
+                local upstream_health_response = kong_client.upstreams:show_health(upstream.id)
+
+                assert.are.equal("HEALTHY", upstream_health_response.data[1].health)
+            end)
+
         end)
 
     end)

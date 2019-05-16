@@ -33,4 +33,18 @@ function Upstream:delete_target(upstream_id_or_name, target_id_or_target)
     })
 end
 
+function Upstream:set_target_as_unhealthy(upstream_id_or_name, target_id_or_target)
+    return self:request({
+        method = "POST",
+        path = self.PATH .. "/" .. upstream_id_or_name .. "/targets/" .. target_id_or_target .. "/unhealthy"
+    })
+end
+
+function Upstream:set_target_as_healthy(upstream_id_or_name, target_id_or_target)
+    return self:request({
+        method = "POST",
+        path = self.PATH .. "/" .. upstream_id_or_name .. "/targets/" .. target_id_or_target .. "/healthy"
+    })
+end
+
 return Upstream
