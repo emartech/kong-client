@@ -160,6 +160,25 @@ describe("KongClient", function()
                 assert.are.equal(service_response.body.id, found_service.id)
             end)
 
+            it("should find a service by name or id", function()
+
+                local service_name = "test_service"
+
+                local service = kong_client.services:create({
+                    name = service_name,
+                    url = "http://mockbin:8080/request"
+                })
+
+                local found_service = kong_client.services:find_by_name_or_id(service.id)
+
+                local service_response = send_admin_request({
+                    method = "GET",
+                    path = "/services/" .. service_name
+                })
+
+                assert.are.equal(service_response.body.id, found_service.id)
+            end)
+
             it("should delete a service", function()
 
                 local service_name = "test_service"

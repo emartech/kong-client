@@ -25,6 +25,13 @@ function ResourceObject:find_by_id(resource_id)
     })
 end
 
+function ResourceObject:find_by_name_or_id(resource_name_or_id)
+    return self:request({
+        method = "GET",
+        path = self.PATH .. "/" .. resource_name_or_id
+    })
+end
+
 function ResourceObject:each(callback, limit)
     limit = limit or 100
 
