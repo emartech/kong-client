@@ -26,4 +26,11 @@ function Upstream:list_targets(upstream_id_or_name)
     })
 end
 
+function Upstream:delete_target(upstream_id_or_name, target_id_or_target)
+    return self:request({
+        method = "DELETE",
+        path = self.PATH .. "/" .. upstream_id_or_name .. "/targets/" .. target_id_or_target
+    })
+end
+
 return Upstream

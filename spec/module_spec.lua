@@ -432,6 +432,28 @@ describe("KongClient", function()
                 assert.are.same(upstream_health_response.body, upstream_health)
             end)
 
+            it("should delete a target of the upstream", function()
+
+                local upstream_name = "test_upstream"
+
+                local upstream = kong_client.upstreams:create({
+                    name = upstream_name
+                })
+
+                local target = kong_client.upstreams:add_target(upstream.id, {
+                    target = "0.0.0.0:8000"
+                })
+
+                kong_client.upstreams:delete_target(upstream.id, target.id)
+
+                local upstream_targets_response = send_admin_request({
+                    method = "GET",
+                    path = "/upstreams/" .. upstream_name .. "/targets/"
+                })
+
+                assert.are.equal(0, upstream_targets_response.body.total)
+            end)
+
         end)
 
     end)
