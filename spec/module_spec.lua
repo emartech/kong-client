@@ -345,6 +345,76 @@ describe("KongClient", function()
             end)
         end)
 
+        describe("Upstream", function()
+
+            it("should create a target for an upstream", function()
+
+                local upstream_name = "test_upstream"
+
+                local upstream = kong_client.upstreams:create({
+                    name = upstream_name
+                })
+
+                local target = kong_client.upstreams:add_target(upstream.id, {
+                    target = "0.0.0.0:8000"
+                })
+
+                local upstream_targets_response = send_admin_request({
+                    method = "GET",
+                    path = "/upstreams/" .. upstream_name .. "/targets/"
+                })
+
+                local expected_target = upstream_targets_response.body.data[1]
+
+                assert.are.equal(expected_target.id, target.id)
+            end)
+
+            it("should list upstream's targets", function()
+
+                local upstream_name = "test_upstream"
+
+                local upstream = kong_client.upstreams:create({
+                    name = upstream_name
+                })
+
+                kong_client.upstreams:add_target(upstream.id, {
+                    target = "0.0.0.0:8000"
+                })
+
+                local upstream_targets = kong_client.upstreams:list_targets(upstream.id)
+
+                local upstream_targets_response = send_admin_request({
+                    method = "GET",
+                    path = "/upstreams/" .. upstream_name .. "/targets/"
+                })
+
+                assert.are.same(upstream_targets_response.body, upstream_targets)
+            end)
+
+            it("should show health of upstream's targets", function()
+
+                local upstream_name = "test_upstream"
+
+                local upstream = kong_client.upstreams:create({
+                    name = upstream_name
+                })
+
+                kong_client.upstreams:add_target(upstream.id, {
+                    target = "0.0.0.0:8000"
+                })
+
+                local upstream_health = kong_client.upstreams:show_health(upstream.id)
+
+                local upstream_health_response = send_admin_request({
+                    method = "GET",
+                    path = "/upstreams/" .. upstream_name .. "/health/"
+                })
+
+                assert.are.same(upstream_health_response.body, upstream_health)
+            end)
+
+        end)
+
     end)
 
 end)

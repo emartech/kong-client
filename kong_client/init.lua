@@ -3,6 +3,7 @@ local Service = require "kong_client.resources.service"
 local Route = require "kong_client.resources.route"
 local Plugin = require "kong_client.resources.plugin"
 local Consumer = require "kong_client.resources.consumer"
+local Upstream = require "kong_client.resources.upstream"
 
 local KongClient = Object:extend()
 
@@ -29,6 +30,7 @@ function KongClient:new(config)
     self.routes = Route(self.http_client)
     self.plugins = Plugin(self.http_client)
     self.consumers = Consumer(self.http_client)
+    self.upstreams = Upstream(self.http_client)
 end
 
 return KongClient
