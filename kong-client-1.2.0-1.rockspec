@@ -1,9 +1,9 @@
 package = "kong-client"
-version = "1.1.0-1"
+version = "1.2.0-1"
 supported_platforms = {"linux", "macosx"}
 source = {
   url = "git+https://github.com/emartech/kong-client.git",
-  tag = "1.1.0"
+  tag = "1.2.0"
 }
 description = {
   summary = "Admin API client for Kong.",
@@ -23,6 +23,7 @@ build = {
     ["kong_client.resources.route"] = "kong_client/resources/route.lua",
     ["kong_client.resources.plugin"] = "kong_client/resources/plugin.lua",
     ["kong_client.resources.consumer"] = "kong_client/resources/consumer.lua",
+    ["kong_client.resources.upstream"] = "kong_client/resources/upstream.lua",
     ["kong_client.helpers.pager"] = "kong_client/helpers/pager.lua",
     ["kong_client.helpers.merge"] = "kong_client/helpers/merge.lua",
     ["kong_client.spec.test_helpers"] = "spec/test_helpers.lua"
