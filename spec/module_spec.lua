@@ -366,159 +366,157 @@ describe("KongClient", function()
 
         describe("Upstream", function()
 
-            it("should create a target for an upstream", function()
+            describe("Target", function()
+                it("should create a target for an upstream", function()
+                    local upstream_name = "test_upstream"
 
-                local upstream_name = "test_upstream"
+                    local upstream = kong_client.upstreams:create({
+                        name = upstream_name
+                    })
 
-                local upstream = kong_client.upstreams:create({
-                    name = upstream_name
-                })
+                    local target = kong_client.upstreams:add_target(upstream.id, {
+                        target = "0.0.0.0:8000"
+                    })
 
-                local target = kong_client.upstreams:add_target(upstream.id, {
-                    target = "0.0.0.0:8000"
-                })
+                    local upstream_targets_response = send_admin_request({
+                        method = "GET",
+                        path = "/upstreams/" .. upstream_name .. "/targets/"
+                    })
 
-                local upstream_targets_response = send_admin_request({
-                    method = "GET",
-                    path = "/upstreams/" .. upstream_name .. "/targets/"
-                })
+                    local expected_target = upstream_targets_response.body.data[1]
 
-                local expected_target = upstream_targets_response.body.data[1]
+                    assert.are.equal(expected_target.id, target.id)
+                end)
 
-                assert.are.equal(expected_target.id, target.id)
-            end)
+                it("should list upstream's targets", function()
+                    local upstream_name = "test_upstream"
 
-            it("should list upstream's targets", function()
+                    local upstream = kong_client.upstreams:create({
+                        name = upstream_name
+                    })
 
-                local upstream_name = "test_upstream"
+                    kong_client.upstreams:add_target(upstream.id, {
+                        target = "0.0.0.0:8000"
+                    })
 
-                local upstream = kong_client.upstreams:create({
-                    name = upstream_name
-                })
+                    local upstream_targets = kong_client.upstreams:list_targets(upstream.id)
 
-                kong_client.upstreams:add_target(upstream.id, {
-                    target = "0.0.0.0:8000"
-                })
+                    local upstream_targets_response = send_admin_request({
+                        method = "GET",
+                        path = "/upstreams/" .. upstream_name .. "/targets/"
+                    })
 
-                local upstream_targets = kong_client.upstreams:list_targets(upstream.id)
+                    assert.are.same(upstream_targets_response.body, upstream_targets)
+                end)
 
-                local upstream_targets_response = send_admin_request({
-                    method = "GET",
-                    path = "/upstreams/" .. upstream_name .. "/targets/"
-                })
+                it("should delete a target of the upstream", function()
+                    local upstream_name = "test_upstream"
 
-                assert.are.same(upstream_targets_response.body, upstream_targets)
-            end)
+                    local upstream = kong_client.upstreams:create({
+                        name = upstream_name
+                    })
 
-            it("should show health of upstream's targets", function()
+                    local target = kong_client.upstreams:add_target(upstream.id, {
+                        target = "0.0.0.0:8000"
+                    })
 
-                local upstream_name = "test_upstream"
+                    kong_client.upstreams:delete_target(upstream.id, target.id)
 
-                local upstream = kong_client.upstreams:create({
-                    name = upstream_name
-                })
+                    local upstream_targets_response = send_admin_request({
+                        method = "GET",
+                        path = "/upstreams/" .. upstream_name .. "/targets/"
+                    })
 
-                kong_client.upstreams:add_target(upstream.id, {
-                    target = "0.0.0.0:8000"
-                })
+                    assert.are.equal(0, upstream_targets_response.body.total)
+                end)
 
-                local upstream_health = kong_client.upstreams:show_health(upstream.id)
+                describe("Healthcheck", function()
+                    it("should show health of upstream's targets", function()
+                        local upstream_name = "test_upstream"
 
-                local upstream_health_response = send_admin_request({
-                    method = "GET",
-                    path = "/upstreams/" .. upstream_name .. "/health/"
-                })
+                        local upstream = kong_client.upstreams:create({
+                            name = upstream_name
+                        })
 
-                assert.are.same(upstream_health_response.body, upstream_health)
-            end)
+                        kong_client.upstreams:add_target(upstream.id, {
+                            target = "0.0.0.0:8000"
+                        })
 
-            it("should delete a target of the upstream", function()
+                        local upstream_health = kong_client.upstreams:show_health(upstream.id)
 
-                local upstream_name = "test_upstream"
+                        local upstream_health_response = send_admin_request({
+                            method = "GET",
+                            path = "/upstreams/" .. upstream_name .. "/health/"
+                        })
 
-                local upstream = kong_client.upstreams:create({
-                    name = upstream_name
-                })
+                        assert.are.same(upstream_health_response.body, upstream_health)
+                    end)
 
-                local target = kong_client.upstreams:add_target(upstream.id, {
-                    target = "0.0.0.0:8000"
-                })
+                    it("should set the upstream's target as unhealthy", function()
+                        local upstream_name = "test_upstream"
 
-                kong_client.upstreams:delete_target(upstream.id, target.id)
-
-                local upstream_targets_response = send_admin_request({
-                    method = "GET",
-                    path = "/upstreams/" .. upstream_name .. "/targets/"
-                })
-
-                assert.are.equal(0, upstream_targets_response.body.total)
-            end)
-
-            it("should set the upstream's target as unhealthy", function()
-
-                local upstream_name = "test_upstream"
-
-                local upstream = kong_client.upstreams:create({
-                    name = upstream_name,
-                    healthchecks = {
-                        passive = {
-                            healthy = {
-                                successes = 1,
-                                http_statuses = { 200 }
-                            },
-                            unhealthy = {
-                                http_failures = 1,
-                                tcp_failures = 1,
-                                timeouts = 1,
-                                http_statuses = { 500 }
+                        local upstream = kong_client.upstreams:create({
+                            name = upstream_name,
+                            healthchecks = {
+                                passive = {
+                                    healthy = {
+                                        successes = 1,
+                                        http_statuses = { 200 }
+                                    },
+                                    unhealthy = {
+                                        http_failures = 1,
+                                        tcp_failures = 1,
+                                        timeouts = 1,
+                                        http_statuses = { 500 }
+                                    }
+                                }
                             }
-                        }
-                    }
-                })
+                        })
 
-                local target = kong_client.upstreams:add_target(upstream.id, {
-                    target = "0.0.0.0:8000"
-                })
+                        local target = kong_client.upstreams:add_target(upstream.id, {
+                            target = "0.0.0.0:8000"
+                        })
 
-                kong_client.upstreams:set_target_as_unhealthy(upstream.id, target.id)
+                        kong_client.upstreams:set_target_as_unhealthy(upstream.id, target.id)
 
-                local upstream_health_response = kong_client.upstreams:show_health(upstream.id)
+                        local upstream_health_response = kong_client.upstreams:show_health(upstream.id)
 
-                assert.are.equal("UNHEALTHY", upstream_health_response.data[1].health)
-            end)
+                        assert.are.equal("UNHEALTHY", upstream_health_response.data[1].health)
+                    end)
 
-            it("should set the upstream's target as healthy", function()
+                    it("should set the upstream's target as healthy", function()
+                        local upstream_name = "test_upstream"
 
-                local upstream_name = "test_upstream"
-
-                local upstream = kong_client.upstreams:create({
-                    name = upstream_name,
-                    healthchecks = {
-                        passive = {
-                            healthy = {
-                                successes = 1,
-                                http_statuses = { 200 }
-                            },
-                            unhealthy = {
-                                http_failures = 1,
-                                tcp_failures = 1,
-                                timeouts = 1,
-                                http_statuses = { 500 }
+                        local upstream = kong_client.upstreams:create({
+                            name = upstream_name,
+                            healthchecks = {
+                                passive = {
+                                    healthy = {
+                                        successes = 1,
+                                        http_statuses = { 200 }
+                                    },
+                                    unhealthy = {
+                                        http_failures = 1,
+                                        tcp_failures = 1,
+                                        timeouts = 1,
+                                        http_statuses = { 500 }
+                                    }
+                                }
                             }
-                        }
-                    }
-                })
+                        })
 
-                local target = kong_client.upstreams:add_target(upstream.id, {
-                    target = "0.0.0.0:8000"
-                })
+                        local target = kong_client.upstreams:add_target(upstream.id, {
+                            target = "0.0.0.0:8000"
+                        })
 
-                kong_client.upstreams:set_target_as_unhealthy(upstream.id, target.id)
-                kong_client.upstreams:set_target_as_healthy(upstream.id, target.id)
+                        kong_client.upstreams:set_target_as_unhealthy(upstream.id, target.id)
+                        kong_client.upstreams:set_target_as_healthy(upstream.id, target.id)
 
-                local upstream_health_response = kong_client.upstreams:show_health(upstream.id)
+                        local upstream_health_response = kong_client.upstreams:show_health(upstream.id)
 
-                assert.are.equal("HEALTHY", upstream_health_response.data[1].health)
+                        assert.are.equal("HEALTHY", upstream_health_response.data[1].health)
+                    end)
+                end)
             end)
 
         end)
