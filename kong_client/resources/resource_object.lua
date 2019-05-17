@@ -32,31 +32,31 @@ function ResourceObject:find_by_name_or_id(resource_name_or_id)
     })
 end
 
-function ResourceObject:each(callback, limit)
-    limit = limit or 100
-
-    local pager = Pager(function(offset)
-        return self:request({
-            method = "GET",
-            path = self.PATH,
-            query = {
-                offset = offset,
-                limit = limit
-            }
-        })
-    end)
-
-    pager:each(callback)
-end
-
-function ResourceObject:all(limit)
+function ResourceObject:page_collection(resource_path, page_size)
+    page_size = page_size or 100
     local resources = {}
 
-    self:each(function(resource)
+    local page_reader = function(offset)
+        return self:request({
+            method = "GET",
+            path = resource_path,
+            query = {
+                offset = offset,
+                size = page_size
+            }
+        })
+    end
+
+    local pager = Pager(page_reader)
+    pager:each(function(resource)
         table.insert(resources, resource)
-    end, limit)
+    end)
 
     return resources
+end
+
+function ResourceObject:all(page_size)
+    return self:page_collection(self.PATH, page_size)
 end
 
 function ResourceObject:update(resource_data)

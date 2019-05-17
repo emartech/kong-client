@@ -19,11 +19,8 @@ function Upstream:add_target(upstream_id_or_name, target_data)
     })
 end
 
-function Upstream:list_targets(upstream_id_or_name)
-    return self:request({
-        method = "GET",
-        path = self.PATH .. "/" .. upstream_id_or_name .. "/targets"
-    })
+function Upstream:list_targets(upstream_id_or_name, page_size)
+    return self:page_collection(self.PATH .. "/" .. upstream_id_or_name .. "/targets", page_size)
 end
 
 function Upstream:delete_target(upstream_id_or_name, target_id_or_target)

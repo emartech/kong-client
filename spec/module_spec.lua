@@ -210,18 +210,15 @@ describe("KongClient", function()
                     url = "http://mockbin:8080/request"
                 })
 
-                local limit = 1
-                local services = kong_client.services:all(limit)
+                local page_size = 1
+                local services = kong_client.services:all(page_size)
 
                 local service_response = send_admin_request({
                     method = "GET",
-                    path = "/services/",
-                    body = {
-                        limit = 100
-                    }
+                    path = "/services/"
                 })
 
-                assert.are.equal(#service_response.body.data, #services)
+                assert.are.same(service_response.body.data, services)
             end)
         end)
 
@@ -388,7 +385,7 @@ describe("KongClient", function()
                     assert.are.equal(expected_target.id, target.id)
                 end)
 
-                it("should list upstream's targets", function()
+                it("should list all of the upstream's targets", function()
                     local upstream_name = "test_upstream"
 
                     local upstream = kong_client.upstreams:create({
@@ -399,14 +396,19 @@ describe("KongClient", function()
                         target = "0.0.0.0:8000"
                     })
 
-                    local upstream_targets = kong_client.upstreams:list_targets(upstream.id)
+                    kong_client.upstreams:add_target(upstream.id, {
+                        target = "1.1.1.1:8000"
+                    })
+
+                    local page_size = 1
+                    local upstream_targets = kong_client.upstreams:list_targets(upstream.id, page_size)
 
                     local upstream_targets_response = send_admin_request({
                         method = "GET",
                         path = "/upstreams/" .. upstream_name .. "/targets/"
                     })
 
-                    assert.are.same(upstream_targets_response.body, upstream_targets)
+                    assert.are.same(upstream_targets_response.body.data, upstream_targets)
                 end)
 
                 it("should delete a target of the upstream", function()
