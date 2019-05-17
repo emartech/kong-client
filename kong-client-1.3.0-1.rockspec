@@ -1,9 +1,9 @@
 package = "kong-client"
-version = "1.2.0-1"
+version = "1.3.0-1"
 supported_platforms = {"linux", "macosx"}
 source = {
   url = "git+https://github.com/emartech/kong-client.git",
-  tag = "1.2.0"
+  tag = "1.3.0"
 }
 description = {
   summary = "Admin API client for Kong.",
